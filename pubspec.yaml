@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_blue_plus: ^1.15.8
+  watcher: ^1.1.0
 
 dev_dependencies:
   flutter_test:

@@ -3,11 +3,8 @@ part of '../../unlockd_bluetooth.dart';
 class EmulatorBluePlus {
   EmulatorBluePlus._();
 
-  static Stream<UnlockdBluetoothAdapterState> get adapterState async* {
-    await for (final event in watchConfig()) {
-      yield UnlockdBluetoothAdapterState.on;
-    }
-  }
+  static Stream<UnlockdBluetoothAdapterState> get adapterState =>
+      watchConfig().map((event) => readConfig().adapterState);
 
   static bool get isScanningNow => FlutterBluePlus.isScanningNow;
 

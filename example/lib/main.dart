@@ -28,6 +28,7 @@ Future<void> main() async {
     [
       Permission.location,
       Permission.storage,
+      Permission.manageExternalStorage,
       Permission.bluetooth,
       Permission.bluetoothConnect,
       Permission.bluetoothScan,

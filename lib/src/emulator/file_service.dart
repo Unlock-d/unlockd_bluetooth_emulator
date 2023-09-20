@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
+import 'package:watcher/watcher.dart';
 
 typedef FilePath = String;
 
@@ -9,9 +10,9 @@ typedef ReadJsonFile = dynamic Function(FilePath path);
 
 const _bluetoothConfigPath = '/storage/self/primary/Download/bluetooth.json';
 
-Stream<FileSystemEvent> watchConfig() => openFile(_bluetoothConfigPath).watch();
+Stream<WatchEvent> watchConfig() => FileWatcher(_bluetoothConfigPath).events;
 
-BluetoothConfig readConfig(ReadJsonFile readFile) =>
+BluetoothConfig readConfig() =>
     BluetoothConfig.fromJson(readJsonFile(_bluetoothConfigPath));
 
 dynamic readJsonFile(FilePath path) =>
