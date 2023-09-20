@@ -12,8 +12,13 @@ sealed class UnlockdBluetooth {
 
   static Stream<bool> get isScanning => FlutterBluePlus.isScanning;
 
-  static Future<ConnectedBluetoothDevices> get connectedSystemDevices =>
-      FlutterBluePlus.connectedSystemDevices;
+  static Future<ConnectedBluetoothDevices> connectedSystemDevices({
+    required IsEmulator isEmulator,
+  }) =>
+      isEmulator
+          ? EmulatorBluePlus.connectedSystemDevices
+          : FlutterBluePlus.connectedSystemDevices
+              .then(ConnectedBluetoothDevices.fromList);
 
   static TurnOn get turnOn => FlutterBluePlus.turnOn;
 
@@ -21,6 +26,5 @@ sealed class UnlockdBluetooth {
 
   static StopScan get stopScan => FlutterBluePlus.stopScan;
 
-  static Stream<ScanResults> get scanResults =>
-      FlutterBluePlus.scanResults;
+  static Stream<ScanResults> get scanResults => FlutterBluePlus.scanResults;
 }

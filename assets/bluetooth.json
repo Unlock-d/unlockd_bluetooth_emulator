@@ -1,3 +1,15 @@
 {
-  "adapterState": "on"
+  "adapterState": "unauthorized",
+  "connectedDevices": [
+    {
+      "remoteId": "00:00:00:00:00:00",
+      "localName": "Changed Name",
+      "type": "classic"
+    },
+    {
+      "remoteId": "01:00:00:00:00:00",
+      "localName": "New Name",
+      "type": "le"
+    }
+  ]
 }

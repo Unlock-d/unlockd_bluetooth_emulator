@@ -11,7 +11,7 @@ class EmulatorBluePlus {
   static Stream<bool> get isScanning => FlutterBluePlus.isScanning;
 
   static Future<ConnectedBluetoothDevices> get connectedSystemDevices =>
-      FlutterBluePlus.connectedSystemDevices;
+      Future.value(readConfig().connectedDevices);
 
   static TurnOn get turnOn => FlutterBluePlus.turnOn;
 

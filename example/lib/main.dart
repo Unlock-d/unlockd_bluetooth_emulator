@@ -87,7 +87,9 @@ class FlutterBlueApp extends StatelessWidget {
           builder: (c, snapshot) {
             final adapterState = snapshot.data;
             if (adapterState == UnlockdBluetoothAdapterState.on) {
-              return const FindDevicesScreen();
+              return FindDevicesScreen(
+                isEmulator: isEmulator,
+              );
             } else {
               UnlockdBluetooth.stopScan();
               return BluetoothOffScreen(adapterState: adapterState);
@@ -150,7 +152,10 @@ class BluetoothOffScreen extends StatelessWidget {
 }
 
 class FindDevicesScreen extends StatefulWidget {
-  const FindDevicesScreen({Key? key}) : super(key: key);
+  const FindDevicesScreen({Key? key, required this.isEmulator})
+      : super(key: key);
+
+  final IsEmulator isEmulator;
 
   @override
   State<FindDevicesScreen> createState() => _FindDevicesScreenState();
@@ -174,17 +179,20 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                   androidUsesFineLocation: false);
             }
             return Future.delayed(
-                Duration(milliseconds: 500)); // show refresh icon breifly
+                const Duration(milliseconds: 500)); // show refresh icon breifly
           },
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                StreamBuilder<List<UnlockdBluetoothDevice>>(
+                StreamBuilder<ConnectedBluetoothDevices>(
                   stream: Stream.fromFuture(
-                      UnlockdBluetooth.connectedSystemDevices),
-                  initialData: const [],
+                    UnlockdBluetooth.connectedSystemDevices(
+                      isEmulator: widget.isEmulator,
+                    ),
+                  ),
+                  initialData: const ConnectedBluetoothDevices.empty(),
                   builder: (c, snapshot) => Column(
-                    children: (snapshot.data ?? [])
+                    children: (snapshot.data!)
                         .map((d) => ListTile(
                               title: Text(d.localName),
                               subtitle: Text(d.remoteId.toString()),
@@ -203,7 +211,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                                           .push(MaterialPageRoute(
                                               builder: (context) =>
                                                   DeviceScreen(device: d),
-                                              settings: RouteSettings(
+                                              settings: const RouteSettings(
                                                   name: '/deviceScreen'))),
                                     );
                                   }
