@@ -1,4 +1,6 @@
-part of '../unlockd_bluetooth.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:unlockd_bluetooth/src/extensions.dart';
 
 typedef IsEmulator = bool;
 
@@ -54,22 +56,21 @@ typedef StartScan = Future<void> Function({
 
 typedef StopScan = Future<void> Function();
 
-class BluetoothConfig {
-  BluetoothConfig._({
+class BluetoothState {
+  BluetoothState._({
     this.adapterState = UnlockdBluetoothAdapterState.unknown,
     this.connectedDevices = const ConnectedBluetoothDevices.empty(),
   });
 
-  factory BluetoothConfig.fromJson(dynamic value) {
-    final json = value as Map<String, dynamic>;
-    return BluetoothConfig._(
+  factory BluetoothState.fromJson(Map<String, dynamic> json) {
+    return BluetoothState._(
       adapterState: BluetoothAdapterStateExtension.fromValue(
         json['adapterState'] as String,
       ),
       connectedDevices: ConnectedBluetoothDevices.fromList(
         IList.fromJson(
-          value['connectedDevices'],
-          BluetoothDeviceExtension.fromJson,
+          json['connectedDevices'],
+          (list) => fromJson(list as Map<String, dynamic>),
         ),
       ),
     );

@@ -1,4 +1,5 @@
-part of '../unlockd_bluetooth.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
 
 sealed class UnlockdBluetooth {
   UnlockdBluetooth._();
