@@ -31,7 +31,10 @@ sealed class UnlockdBluetooth {
           : FlutterBluePlus.connectedSystemDevices
               .then(ConnectedBluetoothDevices.fromList);
 
-  static TurnOn get turnOn => FlutterBluePlus.turnOn;
+  static TurnOn turnOn({
+    required IsEmulator isEmulator,
+  }) =>
+      isEmulator ? EmulatorBluePlus.turnOn : FlutterBluePlus.turnOn;
 
   static StartScan get startScan => FlutterBluePlus.startScan;
 

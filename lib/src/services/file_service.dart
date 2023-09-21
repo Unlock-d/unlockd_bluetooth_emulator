@@ -11,24 +11,42 @@ Stream<WatchEvent> watchConfig() => FileWatcher(_bluetoothConfigPath).events;
 
 TaskOption<BluetoothState> readBluetoothState() =>
     readJsonFile(_bluetoothConfigPath)
-        .chainEither(
-          (json) => Either.tryCatch(
-            () => BluetoothState.fromJson(json),
-            (_, __) => ConfigFileParsingException(),
-          ),
-        )
+        .chainEither(mapToBluetoothState)
         .bind(logException)
         .toTaskOption();
 
-TaskEither<ReaderException, Json> readJsonFile(FilePath path) =>
-    TaskEither.tryCatch(
-      () async => openFile(path).readAsString(),
-      (_, __) => FileReadException(),
-    )
-    // TODO(PJ): for some reason this cast is needed. Figure out why.
-    // ignore: unnecessary_cast
-        .mapLeft((l) => l as ReaderException)
+TaskEither<FileHandlingException, Json> readJsonFile(FilePath path) =>
+    openFile(path)
+        .chainTask(readFileContents)
+        // TODO(PJ): for some reason this cast is needed. Figure out why.
+        // ignore: unnecessary_cast
+        .mapLeft((l) => l as FileHandlingException)
         .map(jsonDecode)
         .map((dynamicValue) => dynamicValue as Json);
 
-File openFile(FilePath path) => File(path);
+TaskEither<FileReadException, String> readFileContents(File file) =>
+    TaskEither.tryCatch(
+      () async => file.readAsString(),
+      (_, __) => FileReadException(),
+    );
+
+TaskOption<File> writeBluetoothState(BluetoothState state) =>
+    openFile(_bluetoothConfigPath)
+        .chainFirst((file) => overwriteFileContents(file, jsonEncode(state)))
+        .bind(logException)
+        .toTaskOption();
+
+TaskEither<FileWriteException, File> overwriteFileContents(
+  File file,
+  String contents,
+) =>
+    TaskEither.tryCatch(
+      () => file.writeAsString(contents),
+      (_, __) => FileWriteException(),
+    );
+
+TaskEither<FileHandlingException, File> openFile(FilePath path) =>
+    TaskEither.tryCatch(
+      () async => File(path),
+      (error, stackTrace) => FileReadException(),
+    );

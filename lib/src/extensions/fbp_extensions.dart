@@ -21,3 +21,11 @@ UnlockdBluetoothDevice fromJson(Map<String, dynamic> json) {
     type: BluetoothDeviceTypeExtension.fromValue(json['type'] as String),
   );
 }
+
+extension BluetoothDeviceExtension on UnlockdBluetoothDevice {
+  Map<String, dynamic> toJson() => {
+        'remoteId': remoteId.str,
+        'localName': localName,
+        'type': type.name,
+      };
+}

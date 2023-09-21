@@ -40,6 +40,9 @@ class ConnectedBluetoothDevices
 
   @override
   IList<UnlockdBluetoothDevice> get iter => _devices;
+
+  List<Map<String, dynamic>> toJson() =>
+      _devices.map((device) => device.toJson()).toList();
 }
 
 typedef ScanResults = List<UnlockdScanResult>;
@@ -83,4 +86,20 @@ class BluetoothState {
   final ConnectedBluetoothDevices connectedDevices;
 
   final bool isScanning;
+
+  Map<String, dynamic> toJson() => {
+        'adapterState': adapterState.name,
+        'connectedDevices': connectedDevices.toJson(),
+        'isScanning': isScanning,
+      };
+
+  BluetoothState copyWith({
+    BluetoothAdapterState? adapterState,
+  }) {
+    return BluetoothState._(
+      adapterState: adapterState ?? this.adapterState,
+      connectedDevices: connectedDevices,
+      isScanning: isScanning,
+    );
+  }
 }

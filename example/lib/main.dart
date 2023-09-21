@@ -93,7 +93,10 @@ class FlutterBlueApp extends StatelessWidget {
               );
             } else {
               UnlockdBluetooth.stopScan();
-              return BluetoothOffScreen(adapterState: adapterState);
+              return BluetoothOffScreen(
+                adapterState: adapterState,
+                isEmulator: isEmulator,
+              );
             }
           }),
       navigatorObservers: [BluetoothAdapterStateObserver(isEmulator)],
@@ -102,8 +105,13 @@ class FlutterBlueApp extends StatelessWidget {
 }
 
 class BluetoothOffScreen extends StatelessWidget {
-  const BluetoothOffScreen({Key? key, this.adapterState}) : super(key: key);
+  const BluetoothOffScreen({
+    Key? key,
+    this.adapterState,
+    required this.isEmulator,
+  }) : super(key: key);
 
+  final IsEmulator isEmulator;
   final UnlockdBluetoothAdapterState? adapterState;
 
   @override
@@ -134,9 +142,10 @@ class BluetoothOffScreen extends StatelessWidget {
                   onPressed: () async {
                     try {
                       if (Platform.isAndroid) {
-                        await UnlockdBluetooth.turnOn();
+                        await UnlockdBluetooth.turnOn(isEmulator: isEmulator).call();
                       }
                     } catch (e) {
+                      print(e);
                       final snackBar =
                           snackBarFail(prettyException("Error Turning On:", e));
                       snackBarKeyA.currentState?.removeCurrentSnackBar();
@@ -423,8 +432,9 @@ class DeviceScreen extends StatelessWidget {
                     },
                     onNotificationPressed: () async {
                       try {
-                        String op =
-                            c.isNotifying == false ? "Subscribe" : "Unsubscribe";
+                        String op = c.isNotifying == false
+                            ? "Subscribe"
+                            : "Unsubscribe";
                         await c.setNotifyValue(c.isNotifying == false);
                         final snackBar = snackBarGood("$op : Success");
                         snackBarKeyC.currentState?.removeCurrentSnackBar();

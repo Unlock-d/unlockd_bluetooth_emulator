@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
 
@@ -6,8 +5,7 @@ class EmulatorBluePlus {
   EmulatorBluePlus._();
 
   static Stream<UnlockdBluetoothAdapterState> get adapterState =>
-      watchConfig()
-      .asyncMap(
+      watchConfig().asyncMap(
         (event) => readBluetoothState()
             .map((r) => r.adapterState)
             .getOrElse(() => UnlockdBluetoothAdapterState.unknown)
@@ -32,7 +30,11 @@ class EmulatorBluePlus {
           .getOrElse(() => const ConnectedBluetoothDevices.empty())
           .run();
 
-  static TurnOn get turnOn => FlutterBluePlus.turnOn;
+  static TurnOn get turnOn => ({int timeout = 0}) => readBluetoothState()
+      .map(turnOnBluetooth)
+      .chainTask(writeBluetoothState)
+      .delay(Duration(seconds: timeout))
+      .run();
 
   static StartScan get startScan => FlutterBluePlus.startScan;
 
