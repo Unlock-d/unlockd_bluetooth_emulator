@@ -7,15 +7,12 @@ class EmulatorBluePlus {
   static Stream<UnlockdBluetoothAdapterState> get adapterState =>
       watchConfig().asyncMap(
         (event) => readBluetoothState()
-            .swap()
-            .map(logException)
-            .swap()
             .map((r) => r.adapterState)
             .getOrElse((l) => UnlockdBluetoothAdapterState.unknown)
             .run(),
       );
 
-  static Future<bool> get isScanningNow => readBluetoothState()
+  static Future<bool> get isScanningNow async => readBluetoothState()
       .map((r) => r.isScanning)
       .getOrElse((l) => false)
       .run();

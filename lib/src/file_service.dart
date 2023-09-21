@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:fpdart/fpdart.dart';
 import 'package:unlockd_bluetooth/src/domain/bluetooth_domain.dart';
 import 'package:unlockd_bluetooth/src/domain/file_reader_domain.dart';
+import 'package:unlockd_bluetooth/src/logger_service.dart';
 import 'package:watcher/watcher.dart';
 
 const _bluetoothConfigPath = '/storage/self/primary/Download/bluetooth.json';
@@ -11,12 +12,16 @@ const _bluetoothConfigPath = '/storage/self/primary/Download/bluetooth.json';
 Stream<WatchEvent> watchConfig() => FileWatcher(_bluetoothConfigPath).events;
 
 TaskEither<Exception, BluetoothState> readBluetoothState() =>
-    readJsonFile(_bluetoothConfigPath).chainEither(
-      (json) => Either.tryCatch(
-        () => BluetoothState.fromJson(json),
-        (o, s) => ConfigFileParsingException(),
-      ),
-    );
+    readJsonFile(_bluetoothConfigPath)
+        .chainEither(
+          (json) => Either.tryCatch(
+            () => BluetoothState.fromJson(json),
+            (o, s) => ConfigFileParsingException(),
+          ),
+        )
+        .swap()
+        .map(logException)
+        .swap();
 
 TaskEither<Exception, Json> readJsonFile(FilePath path) => TaskEither.tryCatch(
       () async => openFile(path).readAsString(),
@@ -24,4 +29,3 @@ TaskEither<Exception, Json> readJsonFile(FilePath path) => TaskEither.tryCatch(
     ).map(jsonDecode).map((dynamicValue) => dynamicValue as Json);
 
 File openFile(FilePath path) => File(path);
-
