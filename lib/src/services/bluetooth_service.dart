@@ -10,3 +10,11 @@ Either<FileHandlingException, BluetoothState> mapToBluetoothState(Json json) =>
 BluetoothState turnOnBluetooth(BluetoothState state) {
   return state.copyWith(adapterState: UnlockdBluetoothAdapterState.on);
 }
+
+BluetoothState startScanning(BluetoothState state) {
+  return state.copyWith(isScanning: true);
+}
+
+BluetoothState stopScanning(BluetoothState state) {
+  return state.copyWith(isScanning: false);
+}

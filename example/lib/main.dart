@@ -92,7 +92,7 @@ class FlutterBlueApp extends StatelessWidget {
                 isEmulator: isEmulator,
               );
             } else {
-              UnlockdBluetooth.stopScan();
+              UnlockdBluetooth.stopScan(isEmulator: isEmulator).call();
               return BluetoothOffScreen(
                 adapterState: adapterState,
                 isEmulator: isEmulator,
@@ -142,7 +142,8 @@ class BluetoothOffScreen extends StatelessWidget {
                   onPressed: () async {
                     try {
                       if (Platform.isAndroid) {
-                        await UnlockdBluetooth.turnOn(isEmulator: isEmulator).call();
+                        await UnlockdBluetooth.turnOn(isEmulator: isEmulator)
+                            .call();
                       }
                     } catch (e) {
                       print(e);
@@ -185,7 +186,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
             setState(() {}); // force refresh of connectedSystemDevices
             if (UnlockdBluetooth.isScanningNow(isEmulator: widget.isEmulator) ==
                 false) {
-              UnlockdBluetooth.startScan(
+              UnlockdBluetooth.startScan(isEmulator: widget.isEmulator).call(
                   timeout: const Duration(seconds: 15),
                   androidUsesFineLocation: false);
             }
@@ -340,7 +341,8 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
               return FloatingActionButton(
                 onPressed: () async {
                   try {
-                    UnlockdBluetooth.stopScan();
+                    UnlockdBluetooth.stopScan(isEmulator: widget.isEmulator)
+                        .call();
                   } catch (e) {
                     final snackBar =
                         snackBarFail(prettyException("Stop Scan Error:", e));
@@ -357,8 +359,10 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                   onPressed: () async {
                     try {
                       await UnlockdBluetooth.startScan(
-                          timeout: const Duration(seconds: 15),
-                          androidUsesFineLocation: false);
+                              isEmulator: widget.isEmulator)
+                          .call(
+                              timeout: const Duration(seconds: 15),
+                              androidUsesFineLocation: false);
                     } catch (e) {
                       final snackBar =
                           snackBarFail(prettyException("Start Scan Error:", e));

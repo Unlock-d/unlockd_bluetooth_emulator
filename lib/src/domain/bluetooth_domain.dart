@@ -95,11 +95,12 @@ class BluetoothState {
 
   BluetoothState copyWith({
     BluetoothAdapterState? adapterState,
+    bool? isScanning,
   }) {
     return BluetoothState._(
       adapterState: adapterState ?? this.adapterState,
       connectedDevices: connectedDevices,
-      isScanning: isScanning,
+      isScanning: isScanning ?? this.isScanning,
     );
   }
 }
