@@ -7,6 +7,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:example/injection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
@@ -173,13 +174,15 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
         body: RefreshIndicator(
           onRefresh: () {
             setState(() {}); // force refresh of connectedSystemDevices
-            if (UnlockdBluetooth.isScanningNow == false) {
+            if (UnlockdBluetooth.isScanningNow(isEmulator: widget.isEmulator) ==
+                false) {
               UnlockdBluetooth.startScan(
                   timeout: const Duration(seconds: 15),
                   androidUsesFineLocation: false);
             }
             return Future.delayed(
-                const Duration(milliseconds: 500)); // show refresh icon breifly
+              const Duration(milliseconds: 500),
+            ); // show refresh icon briefly
           },
           child: SingleChildScrollView(
             child: Column(
@@ -232,8 +235,10 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                                                         .value = true;
                                                     d
                                                         .connect(
-                                                            timeout: Duration(
-                                                                seconds: 35))
+                                                            timeout:
+                                                                const Duration(
+                                                                    seconds:
+                                                                        35))
                                                         .catchError((e) {
                                                       final snackBar =
                                                           snackBarFail(
@@ -256,7 +261,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                                                     return DeviceScreen(
                                                         device: d);
                                                   },
-                                                  settings: RouteSettings(
+                                                  settings: const RouteSettings(
                                                       name: '/deviceScreen')));
                                         });
                                   }
@@ -288,7 +293,8 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                                           .value = true;
                                       r.device
                                           .connect(
-                                              timeout: Duration(seconds: 35))
+                                              timeout:
+                                                  const Duration(seconds: 35))
                                           .catchError((e) {
                                         final snackBar = snackBarFail(
                                             prettyException(
@@ -306,8 +312,8 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                                       });
                                       return DeviceScreen(device: r.device);
                                     },
-                                    settings:
-                                        RouteSettings(name: '/deviceScreen'))),
+                                    settings: const RouteSettings(
+                                        name: '/deviceScreen'))),
                           ),
                         )
                         .toList(),
@@ -318,12 +324,11 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
           ),
         ),
         floatingActionButton: StreamBuilder<bool>(
-          stream: UnlockdBluetooth.isScanning,
+          stream: UnlockdBluetooth.isScanning(isEmulator: widget.isEmulator),
           initialData: false,
           builder: (c, snapshot) {
             if (snapshot.data ?? false) {
               return FloatingActionButton(
-                child: const Icon(Icons.stop),
                 onPressed: () async {
                   try {
                     UnlockdBluetooth.stopScan();
@@ -335,6 +340,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                   }
                 },
                 backgroundColor: Colors.red,
+                child: const Icon(Icons.stop),
               );
             } else {
               return FloatingActionButton(
@@ -418,7 +424,7 @@ class DeviceScreen extends StatelessWidget {
                     onNotificationPressed: () async {
                       try {
                         String op =
-                            c.isNotifying == false ? "Subscribe" : "Unubscribe";
+                            c.isNotifying == false ? "Subscribe" : "Unsubscribe";
                         await c.setNotifyValue(c.isNotifying == false);
                         final snackBar = snackBarGood("$op : Success");
                         snackBarKeyC.currentState?.removeCurrentSnackBar();
@@ -492,7 +498,7 @@ class DeviceScreen extends StatelessWidget {
           actions: <Widget>[
             StreamBuilder<UnlockdBluetoothConnectionState>(
               stream: device.connectionState,
-              initialData: UnlockdBluetoothConnectionState.connecting,
+              initialData: UnlockdBluetoothConnectionState.disconnected,
               builder: (c, snapshot) {
                 VoidCallback? onPressed;
                 String text;
@@ -528,7 +534,8 @@ class DeviceScreen extends StatelessWidget {
                       isConnectingOrDisconnecting[device.remoteId]!.value =
                           true;
                       try {
-                        await device.connect(timeout: Duration(seconds: 35));
+                        await device.connect(
+                            timeout: const Duration(seconds: 35));
                         final snackBar = snackBarGood("Connect: Success");
                         snackBarKeyC.currentState?.removeCurrentSnackBar();
                         snackBarKeyC.currentState?.showSnackBar(snackBar);
@@ -560,8 +567,8 @@ class DeviceScreen extends StatelessWidget {
                       if (isConnectingOrDisconnecting[device.remoteId]!.value ==
                           true) {
                         // Show spinner when connecting or disconnecting
-                        return Padding(
-                          padding: const EdgeInsets.all(14.0),
+                        return const Padding(
+                          padding: EdgeInsets.all(14.0),
                           child: AspectRatio(
                             aspectRatio: 1.0,
                             child: CircularProgressIndicator(
@@ -591,7 +598,7 @@ class DeviceScreen extends StatelessWidget {
             children: <Widget>[
               StreamBuilder<UnlockdBluetoothConnectionState>(
                 stream: device.connectionState,
-                initialData: UnlockdBluetoothConnectionState.connecting,
+                initialData: UnlockdBluetoothConnectionState.disconnected,
                 builder: (c, snapshot) => Column(
                   children: [
                     Padding(
@@ -654,12 +661,12 @@ class DeviceScreen extends StatelessWidget {
                             ),
                             const IconButton(
                               icon: SizedBox(
+                                width: 18.0,
+                                height: 18.0,
                                 child: CircularProgressIndicator(
                                   valueColor:
                                       AlwaysStoppedAnimation(Colors.grey),
                                 ),
-                                width: 18.0,
-                                height: 18.0,
                               ),
                               onPressed: null,
                             )
@@ -709,9 +716,10 @@ class DeviceScreen extends StatelessWidget {
     );
   }
 
-  Stream<int> rssiStream(
-      {Duration frequency = const Duration(seconds: 5),
-      int? maxItems = null}) async* {
+  Stream<int> rssiStream({
+    Duration frequency = const Duration(seconds: 5),
+    int? maxItems,
+  }) async* {
     var isConnected = true;
     final subscription = device.connectionState.listen((v) {
       isConnected = v == UnlockdBluetoothConnectionState.connected;
@@ -721,7 +729,9 @@ class DeviceScreen extends StatelessWidget {
       try {
         yield await device.readRssi();
       } catch (e) {
-        print("Error reading RSSI: $e");
+        if (kDebugMode) {
+          print("Error reading RSSI: $e");
+        }
         break;
       }
       await Future.delayed(frequency);

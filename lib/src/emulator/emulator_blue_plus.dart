@@ -15,9 +15,20 @@ class EmulatorBluePlus {
             .run(),
       );
 
-  static bool get isScanningNow => FlutterBluePlus.isScanningNow;
+  static Future<bool> get isScanningNow => readBluetoothState()
+      .map((r) => r.isScanning)
+      .getOrElse((l) => false)
+      .run();
 
-  static Stream<bool> get isScanning => FlutterBluePlus.isScanning;
+  static Stream<bool> get isScanning => watchConfig().asyncMap(
+        (event) => readBluetoothState()
+            .swap()
+            .map(logException)
+            .swap()
+            .map((r) => r.isScanning)
+            .getOrElse((l) => false)
+            .run(),
+      );
 
   static Future<ConnectedBluetoothDevices> get connectedSystemDevices =>
       readBluetoothState()

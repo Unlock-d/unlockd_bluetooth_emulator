@@ -60,6 +60,7 @@ class BluetoothState {
   BluetoothState._({
     this.adapterState = UnlockdBluetoothAdapterState.unknown,
     this.connectedDevices = const ConnectedBluetoothDevices.empty(),
+    this.isScanning = false,
   });
 
   factory BluetoothState.fromJson(Map<String, dynamic> json) {
@@ -73,10 +74,13 @@ class BluetoothState {
           (list) => fromJson(list as Map<String, dynamic>),
         ),
       ),
+      isScanning: json['isScanning'] as bool,
     );
   }
 
   final UnlockdBluetoothAdapterState adapterState;
 
   final ConnectedBluetoothDevices connectedDevices;
+
+  final bool isScanning;
 }

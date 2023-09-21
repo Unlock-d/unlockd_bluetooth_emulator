@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
 
@@ -9,9 +11,17 @@ sealed class UnlockdBluetooth {
   }) =>
       isEmulator ? EmulatorBluePlus.adapterState : FlutterBluePlus.adapterState;
 
-  static bool get isScanningNow => FlutterBluePlus.isScanningNow;
+  static FutureOr<bool> isScanningNow({
+    required IsEmulator isEmulator,
+  }) async =>
+      isEmulator
+          ? await EmulatorBluePlus.isScanningNow
+          : FlutterBluePlus.isScanningNow;
 
-  static Stream<bool> get isScanning => FlutterBluePlus.isScanning;
+  static Stream<bool> isScanning({
+    required IsEmulator isEmulator,
+  }) =>
+      isEmulator ? EmulatorBluePlus.isScanning : FlutterBluePlus.isScanning;
 
   static Future<ConnectedBluetoothDevices> connectedSystemDevices({
     required IsEmulator isEmulator,

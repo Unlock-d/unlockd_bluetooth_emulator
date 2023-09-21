@@ -1,5 +1,6 @@
 {
   "adapterState": "on",
+  "isScanning": false,
   "connectedDevices": [
     {
       "remoteId": "00:00:00:00:00:00",
