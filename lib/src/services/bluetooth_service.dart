@@ -4,7 +4,7 @@ import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
 Either<FileHandlingException, BluetoothState> mapToBluetoothState(Json json) =>
     Either.tryCatch(
       () => BluetoothState.fromJson(json),
-      (_, __) => ConfigFileParsingException(),
+      ConfigFileParsingException.new,
     );
 
 BluetoothState turnOnBluetooth(BluetoothState state) {

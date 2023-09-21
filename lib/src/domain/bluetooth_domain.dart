@@ -22,6 +22,8 @@ typedef UnlockdBluetoothDescriptor = BluetoothDescriptor;
 
 typedef UnlockdBluetoothDeviceType = BluetoothDeviceType;
 
+typedef UnlockdAdvertisementData = AdvertisementData;
+
 typedef UnlockdBluetoothException = FlutterBluePlusException;
 
 class ConnectedBluetoothDevices
@@ -45,7 +47,25 @@ class ConnectedBluetoothDevices
       _devices.map((device) => device.toJson()).toList();
 }
 
-typedef ScanResults = List<UnlockdScanResult>;
+class ScanResults with FromIListMixin<UnlockdScanResult, ScanResults> {
+  /// This is the boilerplate to create the collection:
+  final IList<UnlockdScanResult> _results;
+
+  const ScanResults.empty() : _results = const IListConst([]);
+
+  ScanResults.fromList(Iterable<UnlockdScanResult> devices)
+      : _results = IList(devices);
+
+  @override
+  ScanResults newInstance(IList<UnlockdScanResult> ilist) =>
+      ScanResults.fromList(ilist);
+
+  @override
+  IList<UnlockdScanResult> get iter => _results;
+
+  List<Map<String, dynamic>> toJson() =>
+      _results.map((result) => result.toJson()).toList();
+}
 
 typedef TurnOn = Future<void> Function({int timeout});
 
@@ -62,8 +82,9 @@ typedef StopScan = Future<void> Function();
 class BluetoothState {
   BluetoothState._({
     required this.adapterState,
-    this.connectedDevices = const ConnectedBluetoothDevices.empty(),
-    this.isScanning = false,
+    required this.connectedDevices,
+    required this.isScanning,
+    required this.scanResults,
   });
 
   factory BluetoothState.fromJson(Map<String, dynamic> json) {
@@ -74,10 +95,18 @@ class BluetoothState {
       connectedDevices: ConnectedBluetoothDevices.fromList(
         IList.fromJson(
           json['connectedDevices'],
-          (list) => fromJson(list as Map<String, dynamic>),
+          (device) =>
+              BluetoothDeviceExtension.fromJson(device as Map<String, dynamic>),
         ),
       ),
       isScanning: json['isScanning'] as bool,
+      scanResults: ScanResults.fromList(
+        IList.fromJson(
+          json['scanResults'],
+          (result) =>
+              ScanResultExtension.fromJson(result as Map<String, dynamic>),
+        ),
+      ),
     );
   }
 
@@ -87,10 +116,13 @@ class BluetoothState {
 
   final bool isScanning;
 
+  final ScanResults scanResults;
+
   Map<String, dynamic> toJson() => {
         'adapterState': adapterState.name,
         'connectedDevices': connectedDevices.toJson(),
         'isScanning': isScanning,
+        'scanResults': scanResults.toJson(),
       };
 
   BluetoothState copyWith({
@@ -101,6 +133,7 @@ class BluetoothState {
       adapterState: adapterState ?? this.adapterState,
       connectedDevices: connectedDevices,
       isScanning: isScanning ?? this.isScanning,
+      scanResults: scanResults,
     );
   }
 }

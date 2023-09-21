@@ -12,5 +12,44 @@
       "localName": "New Name",
       "type": "le"
     }
+  ],
+  "scanResults": [
+    {
+      "device": {
+        "remoteId": "remoteId",
+        "localName": "localName",
+        "type": "classic"
+      },
+      "advertisementData": {
+        "localName": "localName",
+        "txPowerLevel": 0,
+        "manufacturerData": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        "serviceData": {
+          "00000000-0000-0000-0000-000000000000": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        "serviceUuids": [
+          "00000000-0000-0000-0000-000000000000"
+        ],
+        "connectable": true
+      },
+      "rssi": -50,
+      "timeStamp": "2017-01-01T00:00:00.000Z"
+    }
   ]
 }

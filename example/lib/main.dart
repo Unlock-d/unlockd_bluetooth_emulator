@@ -285,11 +285,12 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                         .toList(),
                   ),
                 ),
-                StreamBuilder<List<UnlockdScanResult>>(
-                  stream: UnlockdBluetooth.scanResults,
-                  initialData: const [],
+                StreamBuilder<ScanResults>(
+                  stream: UnlockdBluetooth.scanResults(
+                      isEmulator: widget.isEmulator),
+                  initialData: const ScanResults.empty(),
                   builder: (c, snapshot) => Column(
-                    children: (snapshot.data ?? [])
+                    children: snapshot.data!
                         .map(
                           (r) => ScanResultTile(
                             result: r,

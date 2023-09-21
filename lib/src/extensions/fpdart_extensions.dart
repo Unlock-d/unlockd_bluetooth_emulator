@@ -24,9 +24,12 @@ extension TaskOptionX<R> on TaskOption<R> {
       );
 
   TaskOption<C> chainTask<C>(
-      TaskOption<C> Function(R) chain,
-      ) =>
+    TaskOption<C> Function(R) chain,
+  ) =>
       flatMap((b) => chain(b).map((c) => c).orElse<C>(TaskOption.none));
+
+  TaskOption<R> filter(bool Function(R t) f) =>
+      TaskOption(() async => (await run()).filter(f));
 }
 
 extension OptionX<R> on Option<R> {

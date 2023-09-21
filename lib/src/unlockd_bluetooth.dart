@@ -46,5 +46,10 @@ sealed class UnlockdBluetooth {
   }) =>
       isEmulator ? EmulatorBluePlus.stopScan : FlutterBluePlus.stopScan;
 
-  static Stream<ScanResults> get scanResults => FlutterBluePlus.scanResults;
+  static Stream<ScanResults> scanResults({
+    required IsEmulator isEmulator,
+  }) =>
+      isEmulator
+          ? EmulatorBluePlus.scanResults
+          : FlutterBluePlus.scanResults.map(ScanResults.fromList);
 }

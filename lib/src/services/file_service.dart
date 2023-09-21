@@ -27,7 +27,7 @@ TaskEither<FileHandlingException, Json> readJsonFile(FilePath path) =>
 TaskEither<FileReadException, String> readFileContents(File file) =>
     TaskEither.tryCatch(
       () async => file.readAsString(),
-      (_, __) => FileReadException(),
+      FileReadException.new,
     );
 
 TaskOption<File> writeBluetoothState(BluetoothState state) =>
@@ -42,11 +42,11 @@ TaskEither<FileWriteException, File> overwriteFileContents(
 ) =>
     TaskEither.tryCatch(
       () => file.writeAsString(contents),
-      (_, __) => FileWriteException(),
+      FileWriteException.new,
     );
 
 TaskEither<FileHandlingException, File> openFile(FilePath path) =>
     TaskEither.tryCatch(
       () async => File(path),
-      (error, stackTrace) => FileReadException(),
+      FileReadException.new,
     );

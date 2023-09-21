@@ -4,10 +4,21 @@ typedef Json = Map<String, dynamic>;
 
 typedef ReadJsonFile = dynamic Function(FilePath path);
 
-sealed class FileHandlingException implements Exception {}
+sealed class FileHandlingException implements Exception {
+  FileHandlingException(this.cause, this.stackTrace);
 
-class FileReadException extends FileHandlingException {}
+  final Object cause;
+  final StackTrace stackTrace;
+}
 
-class FileWriteException extends FileHandlingException {}
+class FileReadException extends FileHandlingException {
+  FileReadException(super.cause, super.stackTrace);
+}
 
-class ConfigFileParsingException extends FileHandlingException {}
+class FileWriteException extends FileHandlingException {
+  FileWriteException(super.cause, super.stackTrace);
+}
+
+class ConfigFileParsingException extends FileHandlingException {
+  ConfigFileParsingException(super.cause, super.stackTrace);
+}

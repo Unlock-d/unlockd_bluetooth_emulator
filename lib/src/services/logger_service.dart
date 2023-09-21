@@ -1,12 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:unlockd_bluetooth/src/domain/file_reader_domain.dart';
 
-Exception _logException(Exception o) {
-  print('object: ${o.runtimeType} - $o');
-  return o;
-}
-
-Either<L, R> logException<L extends Exception, R>(Either<L, R> either) =>
+Either<L, R> logException<L extends FileHandlingException, R>(
+  Either<L, R> either,
+) =>
     either.match<Either<L, R>>(
       (l) => Either.left(l)..mapLeft(_logException),
       Either.right,
     );
+
+FileHandlingException _logException(FileHandlingException o) {
+  debugPrintStack(stackTrace: o.stackTrace, label: o.cause.toString());
+  return o;
+}

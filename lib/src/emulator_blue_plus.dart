@@ -47,15 +47,24 @@ class EmulatorBluePlus {
         bool androidUsesFineLocation = false,
       }) =>
           readBluetoothState()
+              .filter((state) => !state.isScanning)
               .map(startScanning)
               .chainTask(writeBluetoothState)
               .delay(timeout ?? Duration.zero)
               .run();
 
   static StopScan get stopScan => () => readBluetoothState()
+      .filter((state) => state.isScanning)
       .map(stopScanning)
       .chainTask(writeBluetoothState)
       .run();
 
-  static Stream<ScanResults> get scanResults => FlutterBluePlus.scanResults;
+  static Stream<ScanResults> get scanResults => watchConfig()
+      .asyncMap(
+        (event) => readBluetoothState()
+            .map((r) => r.scanResults)
+            .getOrElse(() => const ScanResults.empty())
+            .run(),
+      )
+      .handleError((e, s) => print(e));
 }
