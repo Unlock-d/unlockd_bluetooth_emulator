@@ -1,6 +1,6 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:unlockd_bluetooth/src/extensions.dart';
+import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
 
 typedef IsEmulator = bool;
 
@@ -58,7 +58,7 @@ typedef StopScan = Future<void> Function();
 
 class BluetoothState {
   BluetoothState._({
-    this.adapterState = UnlockdBluetoothAdapterState.unknown,
+    required this.adapterState,
     this.connectedDevices = const ConnectedBluetoothDevices.empty(),
     this.isScanning = false,
   });

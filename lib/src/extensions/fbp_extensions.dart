@@ -2,19 +2,15 @@ import 'package:unlockd_bluetooth/src/domain/bluetooth_domain.dart';
 
 extension BluetoothAdapterStateExtension on UnlockdBluetoothAdapterState {
   static UnlockdBluetoothAdapterState fromValue(String value) {
-    return UnlockdBluetoothAdapterState.values.firstWhere(
-      (element) => element.name == value,
-      orElse: () => UnlockdBluetoothAdapterState.unknown,
-    );
+    return UnlockdBluetoothAdapterState.values
+        .firstWhere((element) => element.name == value);
   }
 }
 
 extension BluetoothDeviceTypeExtension on UnlockdBluetoothDeviceType {
   static UnlockdBluetoothDeviceType fromValue(String value) {
-    return UnlockdBluetoothDeviceType.values.firstWhere(
-      (element) => element.name == value,
-      orElse: () => UnlockdBluetoothDeviceType.unknown,
-    );
+    return UnlockdBluetoothDeviceType.values
+        .firstWhere((element) => element.name == value);
   }
 }
 

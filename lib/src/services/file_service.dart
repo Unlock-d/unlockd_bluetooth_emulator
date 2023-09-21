@@ -2,30 +2,33 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:fpdart/fpdart.dart';
-import 'package:unlockd_bluetooth/src/domain/bluetooth_domain.dart';
-import 'package:unlockd_bluetooth/src/domain/file_reader_domain.dart';
-import 'package:unlockd_bluetooth/src/logger_service.dart';
+import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
 import 'package:watcher/watcher.dart';
 
 const _bluetoothConfigPath = '/storage/self/primary/Download/bluetooth.json';
 
 Stream<WatchEvent> watchConfig() => FileWatcher(_bluetoothConfigPath).events;
 
-TaskEither<Exception, BluetoothState> readBluetoothState() =>
+TaskOption<BluetoothState> readBluetoothState() =>
     readJsonFile(_bluetoothConfigPath)
         .chainEither(
           (json) => Either.tryCatch(
             () => BluetoothState.fromJson(json),
-            (o, s) => ConfigFileParsingException(),
+            (_, __) => ConfigFileParsingException(),
           ),
         )
-        .swap()
-        .map(logException)
-        .swap();
+        .bind(logException)
+        .toTaskOption();
 
-TaskEither<Exception, Json> readJsonFile(FilePath path) => TaskEither.tryCatch(
+TaskEither<ReaderException, Json> readJsonFile(FilePath path) =>
+    TaskEither.tryCatch(
       () async => openFile(path).readAsString(),
       (_, __) => FileReadException(),
-    ).map(jsonDecode).map((dynamicValue) => dynamicValue as Json);
+    )
+    // TODO(PJ): for some reason this cast is needed. Figure out why.
+    // ignore: unnecessary_cast
+        .mapLeft((l) => l as ReaderException)
+        .map(jsonDecode)
+        .map((dynamicValue) => dynamicValue as Json);
 
 File openFile(FilePath path) => File(path);
