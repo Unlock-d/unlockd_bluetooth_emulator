@@ -10,6 +10,10 @@ typedef UnlockdScanResult = ScanResult;
 
 typedef UnlockdBluetoothDevice = BluetoothDevice;
 
+typedef ConnectedBluetoothDevices = List<BluetoothDevice>;
+
+typedef ScanResults = List<ScanResult>;
+
 typedef UnlockdBluetoothService = BluetoothService;
 
 typedef UnlockdBluetoothCharacteristic = BluetoothCharacteristic;

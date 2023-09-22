@@ -146,7 +146,6 @@ class BluetoothOffScreen extends StatelessWidget {
                             .call();
                       }
                     } catch (e) {
-                      print(e);
                       final snackBar =
                           snackBarFail(prettyException("Error Turning On:", e));
                       snackBarKeyA.currentState?.removeCurrentSnackBar();
@@ -197,15 +196,13 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                StreamBuilder<ConnectedBluetoothDevices>(
+                StreamBuilder<List<UnlockdBluetoothDevice>>(
                   stream: Stream.fromFuture(
-                    UnlockdBluetooth.connectedSystemDevices(
-                      isEmulator: widget.isEmulator,
-                    ),
-                  ),
-                  initialData: const ConnectedBluetoothDevices.empty(),
+                      UnlockdBluetooth.connectedSystemDevices(
+                          isEmulator: widget.isEmulator)),
+                  initialData: const [],
                   builder: (c, snapshot) => Column(
-                    children: (snapshot.data!)
+                    children: (snapshot.data ?? [])
                         .map((d) => ListTile(
                               title: Text(d.localName),
                               subtitle: Text(d.remoteId.toString()),
@@ -285,12 +282,12 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                         .toList(),
                   ),
                 ),
-                StreamBuilder<ScanResults>(
+                StreamBuilder<List<UnlockdScanResult>>(
                   stream: UnlockdBluetooth.scanResults(
                       isEmulator: widget.isEmulator),
-                  initialData: const ScanResults.empty(),
+                  initialData: const [],
                   builder: (c, snapshot) => Column(
-                    children: snapshot.data!
+                    children: (snapshot.data ?? [])
                         .map(
                           (r) => ScanResultTile(
                             result: r,
@@ -513,7 +510,7 @@ class DeviceScreen extends StatelessWidget {
           actions: <Widget>[
             StreamBuilder<UnlockdBluetoothConnectionState>(
               stream: device.connectionState,
-              initialData: UnlockdBluetoothConnectionState.disconnected,
+              initialData: UnlockdBluetoothConnectionState.connecting,
               builder: (c, snapshot) {
                 VoidCallback? onPressed;
                 String text;
@@ -613,7 +610,7 @@ class DeviceScreen extends StatelessWidget {
             children: <Widget>[
               StreamBuilder<UnlockdBluetoothConnectionState>(
                 stream: device.connectionState,
-                initialData: UnlockdBluetoothConnectionState.disconnected,
+                initialData: UnlockdBluetoothConnectionState.connecting,
                 builder: (c, snapshot) => Column(
                   children: [
                     Padding(

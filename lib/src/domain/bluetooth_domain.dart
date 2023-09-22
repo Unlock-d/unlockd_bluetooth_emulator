@@ -1,4 +1,3 @@
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
 
@@ -20,47 +19,6 @@ class EmulatedBluetoothDevice extends UnlockdBluetoothDevice {
   }
 }
 
-class ConnectedBluetoothDevices
-    with FromIListMixin<BluetoothDevice, ConnectedBluetoothDevices> {
-  /// This is the boilerplate to create the collection:
-  final IList<BluetoothDevice> _devices;
-
-  const ConnectedBluetoothDevices.empty() : _devices = const IListConst([]);
-
-  ConnectedBluetoothDevices.fromList(Iterable<BluetoothDevice> devices)
-      : _devices = IList(devices);
-
-  @override
-  ConnectedBluetoothDevices newInstance(IList<BluetoothDevice> ilist) =>
-      ConnectedBluetoothDevices.fromList(ilist);
-
-  @override
-  IList<BluetoothDevice> get iter => _devices;
-
-  List<Map<String, dynamic>> toJson() =>
-      _devices.map((device) => device.toJson()).toList();
-}
-
-class ScanResults with FromIListMixin<UnlockdScanResult, ScanResults> {
-  /// This is the boilerplate to create the collection:
-  final IList<UnlockdScanResult> _results;
-
-  const ScanResults.empty() : _results = const IListConst([]);
-
-  ScanResults.fromList(Iterable<UnlockdScanResult> devices)
-      : _results = IList(devices);
-
-  @override
-  ScanResults newInstance(IList<UnlockdScanResult> ilist) =>
-      ScanResults.fromList(ilist);
-
-  @override
-  IList<UnlockdScanResult> get iter => _results;
-
-  List<Map<String, dynamic>> toJson() =>
-      _results.map((result) => result.toJson()).toList();
-}
-
 class EmulatedBluetoothState {
   EmulatedBluetoothState._({
     required this.adapterState,
@@ -74,21 +32,21 @@ class EmulatedBluetoothState {
       adapterState: BluetoothAdapterStateExtension.fromValue(
         json['adapterState'] as String,
       ),
-      connectedDevices: ConnectedBluetoothDevices.fromList(
-        IList.fromJson(
-          json['connectedDevices'],
-          (device) => EmulatedBluetoothDeviceExtension.fromJson(
-              device as Map<String, dynamic>),
-        ),
-      ),
+      connectedDevices: (json['connectedDevices'] as List<dynamic>)
+          .map(
+            (device) => EmulatedBluetoothDeviceExtension.fromJson(
+              device as Map<String, dynamic>,
+            ),
+          )
+          .toList(),
       isScanning: json['isScanning'] as bool,
-      scanResults: ScanResults.fromList(
-        IList.fromJson(
-          json['scanResults'],
-          (result) => EmulatedScanResultExtension.fromJson(
-              result as Map<String, dynamic>),
-        ),
-      ),
+      scanResults: (json['scanResults'] as List<dynamic>)
+          .map(
+            (device) => EmulatedScanResultExtension.fromJson(
+              device as Map<String, dynamic>,
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -102,9 +60,9 @@ class EmulatedBluetoothState {
 
   Map<String, dynamic> toJson() => {
         'adapterState': adapterState.name,
-        'connectedDevices': connectedDevices.toJson(),
+        'connectedDevices': connectedDevices.map((e) => e.toJson()).toList(),
         'isScanning': isScanning,
-        'scanResults': scanResults.toJson(),
+        'scanResults': scanResults.map((e) => e.toJson()).toList(),
       };
 
   EmulatedBluetoothState copyWith({

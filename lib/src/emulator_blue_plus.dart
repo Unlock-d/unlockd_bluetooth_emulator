@@ -30,7 +30,7 @@ class EmulatorBluePlus {
   static Future<ConnectedBluetoothDevices> get connectedSystemDevices =>
       readBluetoothState()
           .map((r) => r.connectedDevices)
-          .getOrElse(() => const ConnectedBluetoothDevices.empty())
+          .getOrElse(() => const [])
           .run();
 
   static TurnOn get turnOn => ({int timeout = 0}) => readBluetoothState()
@@ -63,7 +63,7 @@ class EmulatorBluePlus {
       .asyncMap(
         (event) => readBluetoothState()
             .map((r) => r.scanResults)
-            .getOrElse(() => const ScanResults.empty())
+            .getOrElse(() => const [])
             .run(),
       )
       .handleError((e, s) => print(e));
