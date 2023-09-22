@@ -9,7 +9,7 @@ const _bluetoothConfigPath = '/storage/self/primary/Download/bluetooth.json';
 
 Stream<WatchEvent> watchConfig() => FileWatcher(_bluetoothConfigPath).events;
 
-TaskOption<BluetoothState> readBluetoothState() =>
+TaskOption<EmulatedBluetoothState> readBluetoothState() =>
     readJsonFile(_bluetoothConfigPath)
         .chainEither(mapToBluetoothState)
         .bind(logException)
@@ -30,7 +30,7 @@ TaskEither<FileReadException, String> readFileContents(File file) =>
       FileReadException.new,
     );
 
-TaskOption<File> writeBluetoothState(BluetoothState state) =>
+TaskOption<File> writeBluetoothState(EmulatedBluetoothState state) =>
     openFile(_bluetoothConfigPath)
         .chainFirst((file) => overwriteFileContents(file, jsonEncode(state)))
         .bind(logException)

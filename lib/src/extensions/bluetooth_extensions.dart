@@ -1,5 +1,4 @@
-import 'package:fpdart/fpdart.dart';
-import 'package:unlockd_bluetooth/src/domain/bluetooth_domain.dart';
+import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
 
 extension BluetoothAdapterStateExtension on UnlockdBluetoothAdapterState {
   static UnlockdBluetoothAdapterState fromValue(String value) {
@@ -15,7 +14,7 @@ extension BluetoothDeviceTypeExtension on UnlockdBluetoothDeviceType {
   }
 }
 
-extension BluetoothDeviceExtension on UnlockdBluetoothDevice {
+extension EmulatedBluetoothDeviceExtension on UnlockdBluetoothDevice {
   Map<String, dynamic> toJson() => {
         'remoteId': remoteId.str,
         'localName': localName,
@@ -23,7 +22,7 @@ extension BluetoothDeviceExtension on UnlockdBluetoothDevice {
       };
 
   static UnlockdBluetoothDevice fromJson(Map<String, dynamic> json) {
-    return UnlockdBluetoothDevice(
+    return EmulatedBluetoothDevice(
       remoteId: UnlockdDeviceIdentifier(json['remoteId'] as String),
       localName: json['localName'] as String,
       type: BluetoothDeviceTypeExtension.fromValue(json['type'] as String),
@@ -47,13 +46,17 @@ extension AdvertisementDataExtension on UnlockdAdvertisementData {
       localName: json['localName'] as String,
       txPowerLevel: json['txPowerLevel'] as int?,
       connectable: json['connectable'] as bool,
-      manufacturerData: (json['manufacturerData'] as Map<String, dynamic>)
-          .map((key, value) => MapEntry(int.parse(key), value))
-          .mapValue(
-            (value) => (value as List<dynamic>).map((e) => e as int).toList(),
-          ),
-      serviceData: (json['serviceData'] as Map<String, dynamic>).mapValue(
-        (value) => (value as List<dynamic>).map((e) => e as int).toList(),
+      manufacturerData: (json['manufacturerData'] as Map<String, dynamic>).map(
+        (key, value) => MapEntry(
+          int.parse(key),
+          (value as List<dynamic>).map((e) => e as int).toList(),
+        ),
+      ),
+      serviceData: (json['serviceData'] as Map<String, dynamic>).map(
+        (key, value) => MapEntry(
+          key,
+          (value as List<dynamic>).map((e) => e as int).toList(),
+        ),
       ),
       serviceUuids: (json['serviceUuids'] as List<dynamic>)
           .map((e) => e as String)
@@ -62,7 +65,7 @@ extension AdvertisementDataExtension on UnlockdAdvertisementData {
   }
 }
 
-extension ScanResultExtension on UnlockdScanResult {
+extension EmulatedScanResultExtension on UnlockdScanResult {
   Map<String, dynamic> toJson() => {
         'device': device.toJson(),
         'advertisementData': advertisementData.toJson(),
@@ -72,7 +75,7 @@ extension ScanResultExtension on UnlockdScanResult {
 
   static UnlockdScanResult fromJson(Map<String, dynamic> json) {
     return UnlockdScanResult(
-      device: BluetoothDeviceExtension.fromJson(
+      device: EmulatedBluetoothDeviceExtension.fromJson(
         json['device'] as Map<String, dynamic>,
       ),
       advertisementData: AdvertisementDataExtension.fromJson(

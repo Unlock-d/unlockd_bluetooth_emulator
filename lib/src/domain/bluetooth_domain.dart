@@ -4,44 +4,38 @@ import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
 
 typedef IsEmulator = bool;
 
-typedef UnlockdDeviceIdentifier = DeviceIdentifier;
+class EmulatedBluetoothDevice extends UnlockdBluetoothDevice {
+  EmulatedBluetoothDevice({
+    required super.remoteId,
+    required super.localName,
+    required super.type,
+  });
 
-typedef UnlockdBluetoothAdapterState = BluetoothAdapterState;
-
-typedef UnlockdBluetoothConnectionState = BluetoothConnectionState;
-
-typedef UnlockdScanResult = ScanResult;
-
-typedef UnlockdBluetoothDevice = BluetoothDevice;
-
-typedef UnlockdBluetoothService = BluetoothService;
-
-typedef UnlockdBluetoothCharacteristic = BluetoothCharacteristic;
-
-typedef UnlockdBluetoothDescriptor = BluetoothDescriptor;
-
-typedef UnlockdBluetoothDeviceType = BluetoothDeviceType;
-
-typedef UnlockdAdvertisementData = AdvertisementData;
-
-typedef UnlockdBluetoothException = FlutterBluePlusException;
+  @override
+  Future<void> connect({
+    Duration timeout = const Duration(seconds: 35),
+    bool autoConnect = false,
+  }) async {
+    print('override connect');
+  }
+}
 
 class ConnectedBluetoothDevices
-    with FromIListMixin<UnlockdBluetoothDevice, ConnectedBluetoothDevices> {
+    with FromIListMixin<BluetoothDevice, ConnectedBluetoothDevices> {
   /// This is the boilerplate to create the collection:
-  final IList<UnlockdBluetoothDevice> _devices;
+  final IList<BluetoothDevice> _devices;
 
   const ConnectedBluetoothDevices.empty() : _devices = const IListConst([]);
 
-  ConnectedBluetoothDevices.fromList(Iterable<UnlockdBluetoothDevice> devices)
+  ConnectedBluetoothDevices.fromList(Iterable<BluetoothDevice> devices)
       : _devices = IList(devices);
 
   @override
-  ConnectedBluetoothDevices newInstance(IList<UnlockdBluetoothDevice> ilist) =>
+  ConnectedBluetoothDevices newInstance(IList<BluetoothDevice> ilist) =>
       ConnectedBluetoothDevices.fromList(ilist);
 
   @override
-  IList<UnlockdBluetoothDevice> get iter => _devices;
+  IList<BluetoothDevice> get iter => _devices;
 
   List<Map<String, dynamic>> toJson() =>
       _devices.map((device) => device.toJson()).toList();
@@ -67,44 +61,32 @@ class ScanResults with FromIListMixin<UnlockdScanResult, ScanResults> {
       _results.map((result) => result.toJson()).toList();
 }
 
-typedef TurnOn = Future<void> Function({int timeout});
-
-typedef StartScan = Future<void> Function({
-  List<Guid> withServices,
-  Duration? timeout,
-  Duration? removeIfGone,
-  bool oneByOne,
-  bool androidUsesFineLocation,
-});
-
-typedef StopScan = Future<void> Function();
-
-class BluetoothState {
-  BluetoothState._({
+class EmulatedBluetoothState {
+  EmulatedBluetoothState._({
     required this.adapterState,
     required this.connectedDevices,
     required this.isScanning,
     required this.scanResults,
   });
 
-  factory BluetoothState.fromJson(Map<String, dynamic> json) {
-    return BluetoothState._(
+  factory EmulatedBluetoothState.fromJson(Map<String, dynamic> json) {
+    return EmulatedBluetoothState._(
       adapterState: BluetoothAdapterStateExtension.fromValue(
         json['adapterState'] as String,
       ),
       connectedDevices: ConnectedBluetoothDevices.fromList(
         IList.fromJson(
           json['connectedDevices'],
-          (device) =>
-              BluetoothDeviceExtension.fromJson(device as Map<String, dynamic>),
+          (device) => EmulatedBluetoothDeviceExtension.fromJson(
+              device as Map<String, dynamic>),
         ),
       ),
       isScanning: json['isScanning'] as bool,
       scanResults: ScanResults.fromList(
         IList.fromJson(
           json['scanResults'],
-          (result) =>
-              ScanResultExtension.fromJson(result as Map<String, dynamic>),
+          (result) => EmulatedScanResultExtension.fromJson(
+              result as Map<String, dynamic>),
         ),
       ),
     );
@@ -125,11 +107,11 @@ class BluetoothState {
         'scanResults': scanResults.toJson(),
       };
 
-  BluetoothState copyWith({
+  EmulatedBluetoothState copyWith({
     BluetoothAdapterState? adapterState,
     bool? isScanning,
   }) {
-    return BluetoothState._(
+    return EmulatedBluetoothState._(
       adapterState: adapterState ?? this.adapterState,
       connectedDevices: connectedDevices,
       isScanning: isScanning ?? this.isScanning,

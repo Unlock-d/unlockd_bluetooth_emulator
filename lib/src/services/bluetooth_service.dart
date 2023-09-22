@@ -1,20 +1,20 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
 
-Either<FileHandlingException, BluetoothState> mapToBluetoothState(Json json) =>
+Either<FileHandlingException, EmulatedBluetoothState> mapToBluetoothState(Json json) =>
     Either.tryCatch(
-      () => BluetoothState.fromJson(json),
+      () => EmulatedBluetoothState.fromJson(json),
       ConfigFileParsingException.new,
     );
 
-BluetoothState turnOnBluetooth(BluetoothState state) {
+EmulatedBluetoothState turnOnBluetooth(EmulatedBluetoothState state) {
   return state.copyWith(adapterState: UnlockdBluetoothAdapterState.on);
 }
 
-BluetoothState startScanning(BluetoothState state) {
+EmulatedBluetoothState startScanning(EmulatedBluetoothState state) {
   return state.copyWith(isScanning: true);
 }
 
-BluetoothState stopScanning(BluetoothState state) {
+EmulatedBluetoothState stopScanning(EmulatedBluetoothState state) {
   return state.copyWith(isScanning: false);
 }
