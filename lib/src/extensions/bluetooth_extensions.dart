@@ -14,19 +14,10 @@ extension BluetoothDeviceTypeExtension on UnlockdBluetoothDeviceType {
   }
 }
 
-extension EmulatedBluetoothDeviceExtension on UnlockdBluetoothDevice {
-  Json toJson() => {
-        'remoteId': remoteId.str,
-        'localName': localName,
-        'type': type.name,
-      };
-
-  static UnlockdBluetoothDevice fromJson(Json json) {
-    return EmulatedBluetoothDevice(
-      remoteId: UnlockdDeviceIdentifier(json['remoteId'] as String),
-      localName: json['localName'] as String,
-      type: BluetoothDeviceTypeExtension.fromValue(json['type'] as String),
-    );
+extension BluetoothConnectionStateExtension on UnlockdBluetoothConnectionState {
+  static UnlockdBluetoothConnectionState fromValue(String value) {
+    return UnlockdBluetoothConnectionState.values
+        .firstWhere((element) => element.name == value);
   }
 }
 
@@ -61,28 +52,6 @@ extension AdvertisementDataExtension on UnlockdAdvertisementData {
       serviceUuids: (json['serviceUuids'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
-    );
-  }
-}
-
-extension EmulatedScanResultExtension on UnlockdScanResult {
-  Json toJson() => {
-        'device': device.toJson(),
-        'advertisementData': advertisementData.toJson(),
-        'rssi': rssi,
-        'timeStamp': timeStamp.toIso8601String(),
-      };
-
-  static UnlockdScanResult fromJson(Json json) {
-    return UnlockdScanResult(
-      device: EmulatedBluetoothDeviceExtension.fromJson(
-        json['device'] as Json,
-      ),
-      advertisementData: AdvertisementDataExtension.fromJson(
-        json['advertisementData'] as Json,
-      ),
-      rssi: json['rssi'] as int,
-      timeStamp: DateTime.parse(json['timeStamp'] as String),
     );
   }
 }

@@ -1,5 +1,10 @@
 import 'package:fpdart/fpdart.dart';
 
+// TODO(PJ): create proper bind methods for every type
+// A bind method should receive a function which takes a type of
+// generic value A and return a type with generic value B
+// e.g. TaskEither<M, S> bind<M, S>(TaskEither<M, S> Function(TaskEither<L, R>) f)
+
 extension TaskEitherX<L, R> on TaskEither<L, R> {
   TaskOption<R> toTaskOption() =>
       TaskOption(() async => (await run()).toOption());
@@ -10,7 +15,7 @@ extension TaskEitherX<L, R> on TaskEither<L, R> {
   TaskEither<L, C> chainTask<C>(
     TaskEither<L, C> Function(R) chain,
   ) =>
-      flatMap((b) => chain(b).map((c) => c).orElse(TaskEither.left));
+      flatMap((r) => chain(r).orElse(TaskEither.left));
 }
 
 extension TaskOptionX<R> on TaskOption<R> {

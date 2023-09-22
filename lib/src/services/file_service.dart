@@ -5,15 +5,14 @@ import 'package:fpdart/fpdart.dart';
 import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
 import 'package:watcher/watcher.dart';
 
-const _bluetoothConfigPath = '/storage/self/primary/Download/bluetooth.json';
+const bluetoothConfigPath = '/storage/self/primary/Download/bluetooth.json';
+const bluetoothDeviceConfigPath =
+    '/storage/self/primary/Download/bluetooth_device.json';
 
-Stream<WatchEvent> watchConfig() => FileWatcher(_bluetoothConfigPath).events;
+Stream<WatchEvent> watchConfig() => FileWatcher(bluetoothConfigPath).events;
 
-TaskOption<EmulatedBluetoothState> readBluetoothState() =>
-    readJsonFile(_bluetoothConfigPath)
-        .chainEither(mapToBluetoothState)
-        .bind(logException)
-        .toTaskOption();
+Stream<WatchEvent> watchBluetoothDeviceConfig() =>
+    FileWatcher(bluetoothDeviceConfigPath).events;
 
 TaskEither<FileHandlingException, Json> readJsonFile(FilePath path) =>
     openFile(path)
@@ -29,12 +28,6 @@ TaskEither<FileReadException, String> readFileContents(File file) =>
       () async => file.readAsString(),
       FileReadException.new,
     );
-
-TaskOption<File> writeBluetoothState(EmulatedBluetoothState state) =>
-    openFile(_bluetoothConfigPath)
-        .chainFirst((file) => overwriteFileContents(file, jsonEncode(state)))
-        .bind(logException)
-        .toTaskOption();
 
 TaskEither<FileWriteException, File> overwriteFileContents(
   File file,

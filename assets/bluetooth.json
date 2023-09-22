@@ -5,12 +5,14 @@
     {
       "remoteId": "00:00:00:00:00:00",
       "localName": "Changed Name",
-      "type": "classic"
+      "type": "classic",
+      "deviceConnectionState": "connected"
     },
     {
       "remoteId": "01:00:00:00:00:00",
       "localName": "New Name",
-      "type": "le"
+      "type": "le",
+      "deviceConnectionState": "disconnected"
     }
   ],
   "scanResults": [
@@ -18,7 +20,8 @@
       "device": {
         "remoteId": "remoteId",
         "localName": "localName",
-        "type": "classic"
+        "type": "classic",
+        "deviceConnectionState": "disconnected"
       },
       "advertisementData": {
         "localName": "localName",
