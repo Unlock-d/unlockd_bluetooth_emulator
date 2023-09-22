@@ -36,6 +36,8 @@ class EmulatorBluePlus {
   static TurnOn get turnOn => ({int timeout = 0}) => readBluetoothState()
       .map(turnOnBluetooth)
       .chainTask(writeBluetoothState)
+      // TODO(PJ): I think we don't need the timeout function in the emulator
+      // Maybe we do but in that case it should work the same as the startScan
       .delay(Duration(seconds: timeout))
       .run();
 
@@ -50,6 +52,9 @@ class EmulatorBluePlus {
               .filter((state) => !state.isScanning)
               .map(startScanning)
               .chainTask(writeBluetoothState)
+              // TODO(PJ): I've implemented the timeout wrong here
+              // The scan should run for the timeout duration, then stop
+              // It should not wait for the timeout duration before starting
               .delay(timeout ?? Duration.zero)
               .run();
 

@@ -17,6 +17,11 @@ class EmulatedBluetoothDevice extends UnlockdBluetoothDevice {
   }) async {
     print('override connect');
   }
+
+  @override
+  Future<void> disconnect({int timeout = 35}) async {
+    print('override disconnect');
+  }
 }
 
 class EmulatedBluetoothState {
