@@ -1,4 +1,5 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:unlockd_bluetooth/unlockd_bluetooth.dart';
 
 typedef IsEmulator = bool;
@@ -8,10 +9,14 @@ class EmulatedBluetoothDevice extends UnlockdBluetoothDevice {
     required super.remoteId,
     required super.localName,
     required super.type,
-    required this.deviceConnectionState,
+    this.deviceConnectionState,
+    this.rssi,
+    this.discoveredServices,
   });
 
-  final UnlockdBluetoothConnectionState deviceConnectionState;
+  final UnlockdBluetoothConnectionState? deviceConnectionState;
+  final int? rssi;
+  final List<UnlockdBluetoothService>? discoveredServices;
 
   @override
   Future<void> connect({
@@ -28,28 +33,59 @@ class EmulatedBluetoothDevice extends UnlockdBluetoothDevice {
 
   @override
   List<UnlockdBluetoothService>? get servicesList {
-    return [];
+    return discoveredServices;
   }
 
   @override
-  Future<int> readRssi({int timeout = 15}) async {
-    return 0;
-  }
+  Future<List<UnlockdBluetoothService>> discoverServices({
+    int timeout = 15,
+  }) async =>
+      readBluetoothDeviceState()
+          .chainTask(
+            (r) => Option.fromNullable(r.discoveredServices).toTaskOption(),
+          )
+          .getOrElse(() => [])
+          .run();
+
+  @override
+  Future<int> readRssi({int timeout = 15}) async => readBluetoothDeviceState()
+      .chainTask((r) => Option.fromNullable(r.rssi).toTaskOption())
+      .getOrElse(() => 0)
+      .run();
 
   @override
   Stream<UnlockdBluetoothConnectionState> get connectionState =>
       watchBluetoothDeviceConfig().asyncMap(
         (event) => readBluetoothDeviceState()
-            .map((r) => r.deviceConnectionState)
+            .chainTask(
+              (r) =>
+                  Option.fromNullable(r.deviceConnectionState).toTaskOption(),
+            )
             .getOrElse(() => UnlockdBluetoothConnectionState.disconnected)
             .run(),
       );
+
+  @override
+  @Deprecated('Deprecated in flutter_blue_plus')
+  Stream<List<BluetoothService>> get servicesStream {
+    return watchBluetoothDeviceConfig().asyncMap(
+      (event) => readBluetoothDeviceState()
+          .chainTask(
+            (r) => Option.fromNullable(r.discoveredServices).toTaskOption(),
+          )
+          .getOrElse(() => [])
+          .run(),
+    );
+  }
 
   Json toJson() => {
         'remoteId': remoteId.str,
         'localName': localName,
         'type': type.name,
-        'deviceConnectionState': deviceConnectionState.name,
+        'deviceConnectionState': deviceConnectionState?.name,
+        'rssi': rssi,
+        'discoveredServices':
+            discoveredServices?.map((e) => e.toJson()).toList(),
       };
 
   static EmulatedBluetoothDevice fromJson(Json json) {
@@ -57,9 +93,17 @@ class EmulatedBluetoothDevice extends UnlockdBluetoothDevice {
       remoteId: DeviceIdentifier(json['remoteId'] as String),
       localName: json['localName'] as String,
       type: BluetoothDeviceTypeExtension.fromValue(json['type'] as String),
-      deviceConnectionState: BluetoothConnectionStateExtension.fromValue(
-        json['deviceConnectionState'] as String,
-      ),
+      deviceConnectionState: json['deviceConnectionState'] != null
+          ? BluetoothConnectionStateExtension.fromValue(
+              json['deviceConnectionState'] as String,
+            )
+          : null,
+      rssi: json['rssi'] as int?,
+      discoveredServices: json['discoveredServices'] != null
+          ? (json['discoveredServices'] as List<dynamic>)
+              .map((e) => BluetoothServiceExtension.fromJson(e as Json))
+              .toList()
+          : null,
     );
   }
 }

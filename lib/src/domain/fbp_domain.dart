@@ -23,6 +23,8 @@ typedef UnlockdBluetoothService = BluetoothService;
 
 typedef UnlockdBluetoothCharacteristic = BluetoothCharacteristic;
 
+typedef UnlockdCharacteristicProperties = CharacteristicProperties;
+
 typedef UnlockdBluetoothDescriptor = BluetoothDescriptor;
 
 typedef UnlockdBluetoothDeviceType = BluetoothDeviceType;

@@ -2,5 +2,42 @@
   "remoteId": "00:00:00:00:00:00",
   "localName": "Changed Name",
   "type": "classic",
-  "deviceConnectionState": "connected"
+  "deviceConnectionState": "connected",
+  "rssi": -50,
+  "discoveredServices": [
+    {
+      "service_uuid": "11111111-1111-1111-1111-00805f9b34fb",
+      "remote_id": "00:00:00:00:00:00",
+      "is_primary": 1,
+      "characteristics": [
+        {
+          "service_uuid": "11111111-1111-1111-1111-00805f9b34fb",
+          "remote_id": "00:00:00:00:00:00",
+          "secondary_service_uuid": "11111800-0000-1000-8000-00805f9b34fb",
+          "characteristic_uuid": "00001800-1111-1000-8000-00805f9b34fb",
+          "descriptors": [
+            {
+              "service_uuid": "11111111-1111-1111-1111-00805f9b34fb",
+              "remote_id": "00:00:00:00:00:00",
+              "characteristic_uuid": "00001800-1111-1000-8000-00805f9b34fb",
+              "descriptor_uuid": "00001800-0000-1111-8000-00805f9b34fb"
+            }
+          ],
+          "properties": {
+            "broadcast": 1,
+            "read": 1,
+            "write_without_response": 1,
+            "write": 1,
+            "notify": 1,
+            "indicate": 1,
+            "authenticated_signed_writes": 1,
+            "extended_properties": 1,
+            "notify_encryption_required": 1,
+            "indicate_encryption_required": 1
+          }
+        }
+      ],
+      "included_services": []
+    }
+  ]
 }
