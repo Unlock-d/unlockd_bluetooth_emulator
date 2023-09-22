@@ -1,14 +1,21 @@
-# Unlockd Bluetooth
+# Unlock'd bluetooth emulator
+
+[![Unlock'd][logo_white]][unlockd_link_dark]
+[![Unlock'd][logo_black]][unlockd_link_light]
+
+Developed with 💙 by [Unlock'd][unlockd_link] 🔓
 
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
-[![Powered by Mason](https://img.shields.io/endpoint?url=https%3A%2F%2Ftinyurl.com%2Fmason-badge)](https://github.com/felangel/mason)
 [![License: MIT][license_badge]][license_link]
 
-A Very Good Project created by Very Good CLI.
+A Flutter Starter Project created by the [Unlock'd Team][unlockd_link].
+
+---
 
 ## Installation 💻
 
-**❗ In order to start using Unlockd Bluetooth you must have the [Flutter SDK][flutter_install_link] installed on your machine.**
+**❗ In order to start using Unlockd Bluetooth you must have the [Flutter SDK][flutter_install_link] installed on your
+machine.**
 
 Add `unlockd_bluetooth` to your `pubspec.yaml`:
 
@@ -27,15 +34,19 @@ flutter packages get
 
 ## Continuous Integration 🤖
 
-Unlockd Bluetooth comes with a built-in [GitHub Actions workflow][github_actions_link] powered by [Very Good Workflows][very_good_workflows_link] but you can also add your preferred CI/CD solution.
+Unlockd Bluetooth comes with a built-in [GitHub Actions workflow][github_actions_link] powered
+by [Very Good Workflows][very_good_workflows_link] but you can also add your preferred CI/CD solution.
 
-Out of the box, on each pull request and push, the CI `formats`, `lints`, and `tests` the code. This ensures the code remains consistent and behaves correctly as you add functionality or make changes. The project uses [Very Good Analysis][very_good_analysis_link] for a strict set of analysis options used by our team. Code coverage is enforced using the [Very Good Workflows][very_good_coverage_link].
+Out of the box, on each pull request and push, the CI `formats`, `lints`, and `tests` the code. This ensures the code
+remains consistent and behaves correctly as you add functionality or make changes. The project
+uses [Very Good Analysis][very_good_analysis_link] for a strict set of analysis options used by our team. Code coverage
+is enforced using the [Very Good Workflows][very_good_coverage_link].
 
 ---
 
 ## Running Tests 🧪
 
-For first time users, install the [very_good_cli][very_good_cli_link]:
+For first time users, install the [unlockd_cli_link][unlockd_cli_link]:
 
 ```sh
 dart pub global activate very_good_cli
@@ -59,16 +70,19 @@ open coverage/index.html
 
 [flutter_install_link]: https://docs.flutter.dev/get-started/install
 [github_actions_link]: https://docs.github.com/en/actions/learn-github-actions
+[mason_link]: https://github.com/felangel/mason
+[very_good_coverage_link]: https://github.com/marketplace/actions/very-good-coverage
+[very_good_workflows_link]: https://github.com/VeryGoodOpenSource/very_good_workflows
+
+[flutter_localizations_link]: https://api.flutter.dev/flutter/flutter_localizations/flutter_localizations-library.html
+[internationalization_link]: https://flutter.dev/docs/development/accessibility-and-localization/internationalization
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT
-[logo_black]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_black.png#gh-light-mode-only
-[logo_white]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_white.png#gh-dark-mode-only
-[mason_link]: https://github.com/felangel/mason
+[logo_black]: https://raw.githubusercontent.com/Unlock-d/unlockd_brand/main/RGB/PNG/Logo_unlockd_color_tiber_x3.png#gh-light-mode-only
+[logo_white]: https://raw.githubusercontent.com/Unlock-d/unlockd_brand/main/RGB/PNG/Logo_unlockd_white_x3.png#gh-dark-mode-only
 [very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
 [very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
-[very_good_cli_link]: https://pub.dev/packages/very_good_cli
-[very_good_coverage_link]: https://github.com/marketplace/actions/very-good-coverage
-[very_good_ventures_link]: https://verygood.ventures
-[very_good_ventures_link_light]: https://verygood.ventures#gh-light-mode-only
-[very_good_ventures_link_dark]: https://verygood.ventures#gh-dark-mode-only
-[very_good_workflows_link]: https://github.com/VeryGoodOpenSource/very_good_workflows
+[unlockd_cli_link]: https://github.com/Unlock-d/unlockd_cli
+[unlockd_link_dark]: https://unlockd.be#gh-dark-mode-only
+[unlockd_link]: https://unlockd.be
+[unlockd_link_light]: https://unlockd.be#gh-light-mode-only
