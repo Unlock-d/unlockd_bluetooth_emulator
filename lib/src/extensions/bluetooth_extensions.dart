@@ -15,13 +15,13 @@ extension BluetoothDeviceTypeExtension on UnlockdBluetoothDeviceType {
 }
 
 extension EmulatedBluetoothDeviceExtension on UnlockdBluetoothDevice {
-  Map<String, dynamic> toJson() => {
+  Json toJson() => {
         'remoteId': remoteId.str,
         'localName': localName,
         'type': type.name,
       };
 
-  static UnlockdBluetoothDevice fromJson(Map<String, dynamic> json) {
+  static UnlockdBluetoothDevice fromJson(Json json) {
     return EmulatedBluetoothDevice(
       remoteId: UnlockdDeviceIdentifier(json['remoteId'] as String),
       localName: json['localName'] as String,
@@ -31,7 +31,7 @@ extension EmulatedBluetoothDeviceExtension on UnlockdBluetoothDevice {
 }
 
 extension AdvertisementDataExtension on UnlockdAdvertisementData {
-  Map<String, dynamic> toJson() => {
+  Json toJson() => {
         'localName': localName,
         'txPowerLevel': txPowerLevel,
         'connectable': connectable,
@@ -41,18 +41,18 @@ extension AdvertisementDataExtension on UnlockdAdvertisementData {
         'serviceUuids': serviceUuids,
       };
 
-  static UnlockdAdvertisementData fromJson(Map<String, dynamic> json) {
+  static UnlockdAdvertisementData fromJson(Json json) {
     return UnlockdAdvertisementData(
       localName: json['localName'] as String,
       txPowerLevel: json['txPowerLevel'] as int?,
       connectable: json['connectable'] as bool,
-      manufacturerData: (json['manufacturerData'] as Map<String, dynamic>).map(
+      manufacturerData: (json['manufacturerData'] as Json).map(
         (key, value) => MapEntry(
           int.parse(key),
           (value as List<dynamic>).map((e) => e as int).toList(),
         ),
       ),
-      serviceData: (json['serviceData'] as Map<String, dynamic>).map(
+      serviceData: (json['serviceData'] as Json).map(
         (key, value) => MapEntry(
           key,
           (value as List<dynamic>).map((e) => e as int).toList(),
@@ -66,20 +66,20 @@ extension AdvertisementDataExtension on UnlockdAdvertisementData {
 }
 
 extension EmulatedScanResultExtension on UnlockdScanResult {
-  Map<String, dynamic> toJson() => {
+  Json toJson() => {
         'device': device.toJson(),
         'advertisementData': advertisementData.toJson(),
         'rssi': rssi,
         'timeStamp': timeStamp.toIso8601String(),
       };
 
-  static UnlockdScanResult fromJson(Map<String, dynamic> json) {
+  static UnlockdScanResult fromJson(Json json) {
     return UnlockdScanResult(
       device: EmulatedBluetoothDeviceExtension.fromJson(
-        json['device'] as Map<String, dynamic>,
+        json['device'] as Json,
       ),
       advertisementData: AdvertisementDataExtension.fromJson(
-        json['advertisementData'] as Map<String, dynamic>,
+        json['advertisementData'] as Json,
       ),
       rssi: json['rssi'] as int,
       timeStamp: DateTime.parse(json['timeStamp'] as String),

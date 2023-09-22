@@ -27,25 +27,20 @@ class EmulatedBluetoothState {
     required this.scanResults,
   });
 
-  factory EmulatedBluetoothState.fromJson(Map<String, dynamic> json) {
+  factory EmulatedBluetoothState.fromJson(Json json) {
     return EmulatedBluetoothState._(
       adapterState: BluetoothAdapterStateExtension.fromValue(
         json['adapterState'] as String,
       ),
       connectedDevices: (json['connectedDevices'] as List<dynamic>)
           .map(
-            (device) => EmulatedBluetoothDeviceExtension.fromJson(
-              device as Map<String, dynamic>,
-            ),
+            (device) =>
+                EmulatedBluetoothDeviceExtension.fromJson(device as Json),
           )
           .toList(),
       isScanning: json['isScanning'] as bool,
       scanResults: (json['scanResults'] as List<dynamic>)
-          .map(
-            (device) => EmulatedScanResultExtension.fromJson(
-              device as Map<String, dynamic>,
-            ),
-          )
+          .map((device) => EmulatedScanResultExtension.fromJson(device as Json))
           .toList(),
     );
   }
@@ -58,7 +53,7 @@ class EmulatedBluetoothState {
 
   final ScanResults scanResults;
 
-  Map<String, dynamic> toJson() => {
+  Json toJson() => {
         'adapterState': adapterState.name,
         'connectedDevices': connectedDevices.map((e) => e.toJson()).toList(),
         'isScanning': isScanning,
